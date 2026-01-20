@@ -2,441 +2,595 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { Role, getAllClassSyllabusProgress } from "@/lib/data";
 import {
+  Role,
+  students,
+  classes,
+  staff,
+  feePayments,
+  feeStructure,
+} from "@/lib/data";
+import {
+  LayoutDashboard,
   Users,
   BookOpen,
-  Calendar,
   DollarSign,
-  Bus,
   TrendingUp,
-  LayoutGrid,
-  ShieldCheck,
-  MoreHorizontal,
-  Plus,
-  ArrowRight,
-  Target,
+  AlertCircle,
+  CheckCircle,
+  Calendar,
+  Bus,
+  GraduationCap,
+  ClipboardList,
   FileText,
   Activity,
-  UserCheck,
-  Globe,
-  Zap,
-  Command,
-  HelpCircle,
-  Bell,
-  Search,
-  UserCircle,
-  AlertOctagon
+  Clock,
+  ArrowUp,
+  ArrowDown,
+  Minus,
 } from "lucide-react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export default function AdminHomePage() {
-  const [role, setRole] = useState<Role>("admin");
+export default function PrincipalDashboard() {
+  const [role, setRole] = useState<Role>("principal");
 
-  const stats = [
-    { label: "Total Classes", value: 42, icon: LayoutGrid, color: "text-elite-blue", bg: "bg-elite-blue/10", trend: "School-Wide" },
-    { label: "Course Progress", value: "88%", icon: BookOpen, color: "text-elite-emerald", bg: "bg-elite-emerald/10", trend: "Term 1" },
-    { label: "Fee Collection", value: "Optimal", icon: DollarSign, color: "text-elite-amber", bg: "bg-elite-amber/10", trend: "Financially Healthy" },
-    { label: "School Status", value: "Good", icon: ShieldCheck, color: "text-elite-rose", bg: "bg-elite-rose/10", trend: "All Sync Active" },
+  // Dashboard Statistics
+  const totalStudents = students.length;
+  const totalStaff = staff.length;
+  const activeStudents = students.filter((s) => s.status === "active").length;
+  const attendanceRate = 94;
+  const feeCollectionRate = 78;
+  const totalRevenue = feePayments.reduce((sum, p) => sum + p.amount, 0);
+  const totalFeeExpected = totalStudents * feeStructure.totalFee;
+
+  // Staff Statistics
+  const teachingStaff = staff.filter((s) => s.role === "teaching").length;
+  const nonTeachingStaff = staff.filter(
+    (s) => s.role === "non_teaching" || s.role === "support",
+  ).length;
+  const staffOnLeave = staff.filter((s) => s.status === "on_leave").length;
+
+  // Alerts
+  const alerts = [
+    {
+      id: 1,
+      type: "warning",
+      message: "5 students have attendance below 75%",
+      icon: AlertCircle,
+    },
+    {
+      id: 2,
+      type: "info",
+      message: "Fee deadline approaching in 10 days",
+      icon: Clock,
+    },
+    {
+      id: 3,
+      type: "success",
+      message: "Annual sports day preparation complete",
+      icon: CheckCircle,
+    },
+    {
+      id: 4,
+      type: "error",
+      message: "2 staff leave requests pending approval",
+      icon: AlertCircle,
+    },
+  ];
+
+  // Recent Activities
+  const recentActivities = [
+    {
+      id: 1,
+      action: "New admission",
+      description: "Rahul Sharma joined Class 3-A",
+      time: "2 hours ago",
+      icon: GraduationCap,
+    },
+    {
+      id: 2,
+      action: "Fee Payment",
+      description: "25 fee payments received today",
+      time: "4 hours ago",
+      icon: DollarSign,
+    },
+    {
+      id: 3,
+      action: "Staff Leave",
+      description: "Mrs. Smith applied for 3 days leave",
+      time: "5 hours ago",
+      icon: Users,
+    },
+    {
+      id: 4,
+      action: "Exam Result",
+      description: "Half-yearly results declared for Class 4",
+      time: "1 day ago",
+      icon: ClipboardList,
+    },
+  ];
+
+  // Monthly Trends
+  const monthlyData = [
+    { month: "Jul", students: 450, revenue: 450000 },
+    { month: "Aug", students: 465, revenue: 480000 },
+    { month: "Sep", students: 470, revenue: 520000 },
+    { month: "Oct", students: 475, revenue: 510000 },
+    { month: "Nov", students: 480, revenue: 550000 },
+    { month: "Dec", students: 485, revenue: 580000 },
+  ];
+
+  // Fee Collection by Class
+  const feeCollectionByClass = [
+    { class: "Class 1", collected: 95, total: 100 },
+    { class: "Class 2", collected: 88, total: 100 },
+    { class: "Class 3", collected: 92, total: 100 },
+    { class: "Class 4", collected: 85, total: 100 },
+    { class: "Class 5", collected: 78, total: 100 },
+  ];
+
+  // Staff Performance Summary
+  const staffPerformance = [
+    { category: "Excellent", count: 8, percentage: 35 },
+    { category: "Good", count: 10, percentage: 43 },
+    { category: "Average", count: 4, percentage: 17 },
+    { category: "Needs Improvement", count: 1, percentage: 5 },
+  ];
+
+  // Upcoming Events
+  const upcomingEvents = [
+    {
+      id: 1,
+      title: "Parent-Teacher Meeting",
+      date: "2026-01-25",
+      type: "meeting",
+      priority: "high",
+    },
+    {
+      id: 2,
+      title: "Annual Sports Day",
+      date: "2026-02-01",
+      type: "event",
+      priority: "high",
+    },
+    {
+      id: 3,
+      title: "Unit Test - Class 3",
+      date: "2026-01-28",
+      type: "exam",
+      priority: "medium",
+    },
+    {
+      id: 4,
+      title: "Staff Training Program",
+      date: "2026-02-05",
+      type: "training",
+      priority: "low",
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-google-gray-50 flex flex-col relative overflow-hidden">
-      {/* Mesh Background Interop */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-30">
-        <div className="absolute top-[10%] left-[20%] w-[50%] h-[50%] bg-elite-blue/5 blur-[150px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-10%] right-[10%] w-[40%] h-[40%] bg-elite-rose/5 blur-[120px] rounded-full" />
-      </div>
+    <div className="flex min-h-screen">
+      <Sidebar role={role} onRoleChange={setRole} />
 
-      <header className="h-20 px-6 md:px-10 flex items-center justify-between bg-white/40 backdrop-blur-3xl border-b border-white/60 sticky top-0 z-50">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3 group cursor-pointer">
-             <div className="w-12 h-12 bg-google-gray-900 rounded-xl flex items-center justify-center transition-all group-hover:rotate-12 group-hover:scale-110 shadow-lg">
-                <Command className="w-6 h-6 text-white" />
-             </div>
-             <div className="flex flex-col">
-                <span className="text-xl font-black tracking-tighter text-google-gray-900 leading-none">ADMIN OFFICE</span>
-                <span className="text-[10px] font-bold text-google-gray-400 uppercase tracking-[0.2em] mt-1 flex items-center gap-2">
-                   <span className="w-1.5 h-1.5 bg-elite-rose rounded-full animate-pulse" />
-                   Management Active
-                </span>
-             </div>
+      <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8">
+        {/* Welcome Section */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">
+            Principal Dashboard
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Welcome back! Here's your school overview for today.
+          </p>
+        </div>
+
+        {/* Key Performance Indicators */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="card p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Total Students</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {totalStudents}
+                </p>
+                <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                  <ArrowUp className="w-3 h-3" /> +12 this month
+                </p>
+              </div>
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-blue-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="card p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Teaching Staff</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {teachingStaff}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {nonTeachingStaff} non-teaching
+                </p>
+              </div>
+              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                <Users className="w-5 h-5 text-emerald-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="card p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Attendance Rate</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {attendanceRate}%
+                </p>
+                <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                  <ArrowUp className="w-3 h-3" /> +2.5% vs last week
+                </p>
+              </div>
+              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-amber-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="card p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-500">Fee Collection</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {feeCollectionRate}%
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  ₹{(totalRevenue / 100000).toFixed(1)}L collected
+                </p>
+              </div>
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-purple-600" />
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="flex-1 max-w-2xl mx-12 hidden lg:block">
-           <div className="relative group">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-google-gray-400 group-focus-within:text-elite-blue transition-colors" />
-              <input 
-                 type="text" 
-                 placeholder="Search students, staff, or records..." 
-                 className="w-full bg-white/50 backdrop-blur-xl border border-white/60 rounded-2xl py-3 pl-12 pr-6 text-sm font-bold tracking-tight focus:ring-4 focus:ring-elite-blue/10 transition-all outline-none shadow-sm"
-              />
-           </div>
-        </div>
-
-        <div className="flex items-center gap-5">
-           <button className="action-icon !w-10 !h-10">
-             <Bell className="w-5 h-5" />
-           </button>
-           <button className="action-icon !w-10 !h-10">
-             <HelpCircle className="w-5 h-5" />
-           </button>
-           <div className="h-6 w-[1px] bg-google-gray-200 mx-2" />
-           <div className="flex items-center gap-3 hover:bg-white/50 p-1.5 pr-5 rounded-full transition-all cursor-pointer group shadow-sm bg-white/30 border border-white/60">
-              <div className="w-10 h-10 bg-google-gray-900 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-                 <ShieldCheck className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex flex-col">
-                 <span className="text-[13px] font-black text-google-gray-900 leading-none">Principal</span>
-                 <span className="text-[9px] font-bold text-google-gray-400 uppercase tracking-widest mt-0.5">Admin Access</span>
-              </div>
-           </div>
-        </div>
-      </header>
-
-      <div className="flex-1 flex overflow-hidden relative z-10">
-        <Sidebar role={role} onRoleChange={setRole} />
-
-        <main className="flex-1 overflow-y-auto">
-          <div className="layout-container section-gap">
-            {/* Command Header with Elite Spacing */}
-            <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-8 pb-10 border-b border-google-gray-100">
-               <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-elite-rose/5 border border-elite-rose/10 rounded-full text-[10px] font-black uppercase tracking-widest text-elite-rose">
-                     <Zap className="w-3 h-3" />
-                     Administration
-                  </div>
-                  <h2 className="text-4xl font-extrabold text-google-gray-900 tracking-tighter leading-tight">School <span className="text-elite-blue">Management.</span></h2>
-                  <p className="text-lg text-google-gray-500 font-medium tracking-tight max-w-2xl leading-relaxed">Admin panel for managing teachers, students, and daily school activities efficiently.</p>
-               </div>
-               <div className="flex gap-4">
-                  {/* UX Enhancement: Emergency Alert Button */}
-                  <button className="px-8 py-3.5 bg-elite-rose text-white rounded-xl text-xs font-black uppercase tracking-widest hover:bg-google-gray-900 transition-all shadow-xl active:scale-95 flex items-center gap-3 border border-elite-rose/20">
-                     <AlertOctagon className="w-4 h-4 animate-pulse" />
-                     Emergency Alert
-                  </button>
-                  <button className="px-8 py-3.5 bg-elite-blue text-white rounded-xl text-xs font-black uppercase tracking-widest hover:shadow-lg transition-all active:scale-95 flex items-center gap-3">
-                     <Plus className="w-4 h-4" />
-                     Add New Profile
-                  </button>
-               </div>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Alerts Section */}
+          <div className="card">
+            <div className="p-4 border-b border-gray-100">
+              <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-amber-500" />
+                Alerts & Notifications
+              </h2>
             </div>
-
-            {/* Elite Metrics Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-              {stats.map((stat, idx) => (
-                <div key={idx} className="glass-card p-8 flex flex-col gap-6 group scale-hover">
-                  <div className="flex justify-between items-start">
-                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-md", stat.bg)}>
-                      <stat.icon className={cn("w-6 h-6", stat.color)} />
-                    </div>
-                    <button className="action-icon h-9 w-9 !rounded-lg text-google-gray-300">
-                       <MoreHorizontal className="w-4 h-4" />
-                    </button>
+            <div className="divide-y divide-gray-100">
+              {alerts.map((alert) => (
+                <div key={alert.id} className="p-4 flex items-start gap-3">
+                  <div
+                    className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
+                      alert.type === "warning"
+                        ? "bg-amber-100 text-amber-600"
+                        : alert.type === "error"
+                          ? "bg-red-100 text-red-600"
+                          : alert.type === "success"
+                            ? "bg-green-100 text-green-600"
+                            : "bg-blue-100 text-blue-600",
+                    )}
+                  >
+                    <alert.icon className="w-4 h-4" />
                   </div>
-                  <div className="space-y-1">
-                    <h4 className="text-[11px] font-black text-google-gray-400 uppercase tracking-[0.2em] leading-none mb-2">{stat.label}</h4>
-                    <p className="text-3xl font-extrabold text-google-gray-900 tracking-tighter">{stat.value}</p>
-                    <div className="flex items-center gap-2 pt-3">
-                       <span className={cn("text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full", stat.bg, stat.color)}>{stat.trend}</span>
-                    </div>
+                  <div className="flex-1">
+                    <p className="text-sm text-gray-700">{alert.message}</p>
                   </div>
                 </div>
               ))}
             </div>
-            
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
-              <div className="xl:col-span-2 space-y-8">
-                <div id="curriculum" className="glass-card bg-white/40 overflow-hidden border-white/60">
-                   <div className="p-8 border-b border-google-gray-100/50 flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                         <div className="p-3 bg-elite-indigo/10 rounded-xl shadow-inner">
-                            <BookOpen className="w-6 h-6 text-elite-indigo" />
-                         </div>
-                         <div className="flex flex-col">
-                            <h3 className="text-2xl font-bold text-google-gray-900 tracking-tight">Curriculum Pulse</h3>
-                            <span className="text-xs font-medium text-google-gray-400">Subject-wise Syllabus Completion</span>
-                         </div>
-                      </div>
-                      <div className="flex gap-2">
-                         <Link href="/admin/reports" className="px-5 py-2.5 bg-white border border-google-gray-100 rounded-xl text-xs font-black uppercase tracking-widest text-elite-blue hover:bg-elite-blue hover:text-white transition-all shadow-sm">Detailed Audit</Link>
-                      </div>
-                   </div>
-                   <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {getAllClassSyllabusProgress().map((classData) => (
-                         <div key={classData.classId} className="space-y-6 p-6 rounded-2xl bg-white/50 border border-white shadow-sm hover:shadow-md transition-all group/class">
-                            <div className="flex items-center justify-between mb-2">
-                               <div className="flex items-center gap-3">
-                                  <div className="w-10 h-10 bg-google-gray-900 rounded-xl flex items-center justify-center text-white text-sm font-black shadow-lg group-hover/class:scale-110 transition-transform">
-                                     {classData.className.split(' ')[1]}
-                                  </div>
-                                  <span className="text-lg font-bold text-google-gray-900 group-hover/class:text-elite-blue transition-colors">{classData.className}</span>
-                               </div>
-                               <div className="flex flex-col items-end">
-                                  <span className="text-xs font-black text-google-gray-400 uppercase tracking-widest">Efficiency</span>
-                                  <span className="text-sm font-black text-elite-blue">{(classData.subjects.reduce((acc, s) => acc + s.progress, 0) / classData.subjects.length).toFixed(0)}%</span>
-                               </div>
-                            </div>
-                            
-                            <div className="space-y-4">
-                               {classData.subjects.map((subject) => (
-                                  <div key={subject.subjectId} className="space-y-2">
-                                     <div className="flex justify-between items-center px-1">
-                                        <span className="text-[11px] font-bold text-google-gray-600">{subject.name}</span>
-                                        <span className={cn(
-                                           "text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter",
-                                           subject.progress > 80 ? "bg-elite-emerald/10 text-elite-emerald" : 
-                                           subject.progress > 50 ? "bg-elite-amber/10 text-elite-amber" : 
-                                           "bg-elite-rose/10 text-elite-rose"
-                                        )}>
-                                           {subject.progress}%
-                                        </span>
-                                     </div>
-                                     <div className="w-full h-2 bg-google-gray-100 rounded-full overflow-hidden border border-white/50">
-                                        <div 
-                                           className={cn(
-                                              "h-full rounded-full transition-all duration-1000 ease-out relative shadow-sm",
-                                              subject.progress > 80 ? "bg-elite-emerald" : 
-                                              subject.progress > 50 ? "bg-elite-amber" : 
-                                              "bg-elite-rose"
-                                           )}
-                                           style={{ width: `${subject.progress}%` }}
-                                        >
-                                           <div className="absolute top-0 left-0 w-full h-full bg-white/20 animate-pulse" />
-                                        </div>
-                                     </div>
-                                  </div>
-                               ))}
-                            </div>
-                         </div>
-                      ))}
-                   </div>
+          </div>
+
+          {/* Fee Collection Progress */}
+          <div className="card">
+            <div className="p-4 border-b border-gray-100">
+              <h2 className="font-semibold text-gray-900">
+                Fee Collection by Class
+              </h2>
+            </div>
+            <div className="p-4 space-y-4">
+              {feeCollectionByClass.map((item, idx) => (
+                <div key={idx}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-700">{item.class}</span>
+                    <span className="font-medium">{item.collected}%</span>
+                  </div>
+                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all duration-500",
+                        item.collected >= 90
+                          ? "bg-green-500"
+                          : item.collected >= 80
+                            ? "bg-amber-500"
+                            : "bg-red-500",
+                      )}
+                      style={{ width: `${item.collected}%` }}
+                    />
+                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                {/* UX Enhancement: Fee Collection Velocity Graph */}
-                <div className="glass-card p-10 bg-white border-white/60 group">
-                   <div className="flex justify-between items-center mb-10">
-                      <div className="flex items-center gap-5">
-                         <div className="p-3 bg-elite-amber/10 rounded-xl">
-                            <DollarSign className="w-6 h-6 text-elite-amber" />
-                         </div>
-                         <div className="flex flex-col">
-                            <h3 className="text-2xl font-bold text-google-gray-900 tracking-tight">Financial Velocity</h3>
-                            <span className="text-xs font-medium text-google-gray-400">Monthly Fee Collection Trends</span>
-                         </div>
+          {/* Staff Performance */}
+          <div className="card">
+            <div className="p-4 border-b border-gray-100">
+              <h2 className="font-semibold text-gray-900">
+                Staff Performance Summary
+              </h2>
+            </div>
+            <div className="p-4">
+              <div className="space-y-3">
+                {staffPerformance.map((perf) => (
+                  <div key={perf.category} className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-gray-700">{perf.category}</span>
+                        <span className="text-gray-500">{perf.count}</span>
                       </div>
-                      <div className="flex gap-2">
-                         <div className="px-3 py-1 bg-google-gray-50 rounded-lg text-[10px] font-black uppercase tracking-widest text-google-gray-400">Current Qtr</div>
+                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                          style={{ width: `${perf.percentage}%` }}
+                        />
                       </div>
-                   </div>
-                   
-                   <div className="h-64 flex items-end justify-between gap-4">
-                      {[30, 45, 25, 60, 80, 55, 90, 40, 70, 85, 95, 100].map((val, i) => (
-                         <div key={i} className="flex-1 flex flex-col items-center gap-3 group/bar">
-                            <div className="w-full relative bg-google-gray-50 rounded-t-xl transition-all duration-500 hover:bg-elite-amber group-hover:shadow-lg" style={{ height: `${val}%` }}>
-                               <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-google-gray-900 text-white text-[9px] font-black px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap">
-                                  {val}%
-                               </div>
-                            </div>
-                            <span className="text-[9px] font-bold text-google-gray-400 uppercase tracking-tighter">M{i+1}</span>
-                         </div>
-                      ))}
-                   </div>
-                </div>
-
-                <div className="glass-card p-10 bg-google-gray-900 text-white border-none shadow-2xl relative overflow-hidden group">
-                   <div className="absolute top-0 right-0 w-96 h-96 bg-elite-blue/20 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
-                   
-                   <div className="relative z-10 flex items-center justify-between mb-10">
-                      <div className="flex items-center gap-5">
-                         <div className="p-3 bg-white/10 rounded-xl backdrop-blur-xl border border-white/20 shadow-xl">
-                            <Bus className="w-6 h-6 text-elite-blue" />
-                         </div>
-                         <div className="flex flex-col">
-                            <h3 className="text-2xl font-bold tracking-tight">School Transport</h3>
-                            <span className="text-xs font-medium text-white/50">Bus Tracking and Logistics</span>
-                         </div>
-                      </div>
-                   </div>
-                   
-                   <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-8">
-                      <div className="p-8 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all cursor-pointer">
-                         <div className="flex justify-between items-start mb-6">
-                            <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Active Buses</p>
-                            <Target className="w-4 h-4 text-elite-rose" />
-                         </div>
-                         <p className="text-3xl font-black mb-1">12</p>
-                         <p className="text-xs font-bold text-white/60">Buses active across school routes.</p>
-                      </div>
-                      <div className="p-8 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all cursor-pointer">
-                         <div className="flex justify-between items-start mb-6">
-                            <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Efficiency</p>
-                            <Zap className="w-4 h-4 text-elite-amber" />
-                         </div>
-                         <p className="text-3xl font-black mb-1">84%</p>
-                         <p className="text-xs font-bold text-white/60">Operational status registered.</p>
-                      </div>
-                   </div>
-
-                   <button className="relative z-10 mt-10 w-full py-5 bg-white text-google-gray-900 text-[11px] font-black uppercase tracking-[0.2em] rounded-xl hover:bg-elite-blue hover:text-white transition-all duration-500 shadow-xl active:scale-95 flex items-center justify-center gap-3">
-                      View Transit Map
-                      <ArrowRight className="w-4 h-4" />
-                   </button>
-                </div>
-
-                {/* UX Enhancement: Substitution Hub */}
-                <div className="glass-card p-10 bg-white border-white/60 group">
-                   <div className="flex justify-between items-center mb-10">
-                      <div className="flex items-center gap-5">
-                         <div className="p-3 bg-elite-rose/10 rounded-xl">
-                            <UserCheck className="w-6 h-6 text-elite-rose" />
-                         </div>
-                         <div className="flex flex-col">
-                            <h3 className="text-2xl font-bold text-google-gray-900 tracking-tight">Substitution Hub</h3>
-                            <span className="text-xs font-medium text-google-gray-400">Manage Faculty Absences & Substitutes</span>
-                         </div>
-                      </div>
-                      <div className="flex gap-2">
-                         <div className="px-3 py-1 bg-elite-rose/10 rounded-lg text-[10px] font-black uppercase tracking-widest text-elite-rose">2 Pending Requests</div>
-                      </div>
-                   </div>
-
-                   <div className="space-y-4">
-                      <div className="flex items-center justify-between p-6 bg-google-gray-50 rounded-2xl border border-transparent hover:border-google-gray-100 transition-all group/sub">
-                         <div className="flex items-center gap-6">
-                            <div className="w-12 h-12 bg-google-gray-200 rounded-full overflow-hidden shadow-inner">
-                               <div className="w-full h-full bg-google-gray-900 flex items-center justify-center text-white font-black">MS</div>
-                            </div>
-                            <div>
-                               <h4 className="text-base font-bold text-google-gray-900">Mrs. Smith</h4>
-                               <p className="text-xs font-medium text-google-gray-400 uppercase tracking-widest">Sick Leave • Class 3-A</p>
-                            </div>
-                         </div>
-                         <div className="flex items-center gap-4">
-                            <div className="flex flex-col items-end mr-4">
-                               <span className="text-[10px] font-black text-google-gray-400 uppercase tracking-widest">Assign Substitute</span>
-                               <span className="text-sm font-bold text-elite-blue">Mr. Khanna Available</span>
-                            </div>
-                            <button className="px-6 py-2.5 bg-elite-blue text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:shadow-lg transition-all active:scale-95">
-                               Confirm Sub
-                            </button>
-                         </div>
-                      </div>
-
-                      <div className="flex items-center justify-between p-6 bg-google-gray-50 rounded-2xl border border-transparent hover:border-google-gray-100 transition-all opacity-60">
-                         <div className="flex items-center gap-6">
-                            <div className="w-12 h-12 bg-google-gray-200 rounded-full overflow-hidden shadow-inner">
-                               <div className="w-full h-full bg-google-gray-400 flex items-center justify-center text-white font-black">RK</div>
-                            </div>
-                            <div>
-                               <h4 className="text-base font-bold text-google-gray-900">Mr. Sharma</h4>
-                               <p className="text-xs font-medium text-google-gray-400 uppercase tracking-widest">Personal Leave • Class 5-C</p>
-                            </div>
-                         </div>
-                         <button className="px-6 py-2.5 bg-google-gray-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest opacity-50 cursor-not-allowed">
-                            Assigned: Mrs. Gupta
-                         </button>
-                      </div>
-                   </div>
-                </div>
-              </div>
-
-              {/* Sidebar Critical Notifications & Ops Center */}
-              <div className="space-y-8">
-                {/* UX Enhancement: Staff Availability Widget */}
-                <div className="glass-card p-8 border-white/80 bg-gradient-to-br from-white to-google-gray-50">
-                   <div className="flex items-center gap-4 mb-8">
-                      <div className="p-3 bg-elite-blue/10 rounded-xl">
-                         <UserCheck className="w-5 h-5 text-elite-blue" />
-                      </div>
-                      <div className="flex flex-col">
-                         <h3 className="text-xl font-bold text-google-gray-900 tracking-tight">Staffing</h3>
-                         <span className="text-[10px] font-bold text-google-gray-400 uppercase tracking-widest">Attendance Status</span>
-                      </div>
-                   </div>
-                   
-                   <div className="flex justify-center mb-8 relative">
-                      <svg className="w-40 h-40 transform -rotate-90">
-                         <circle cx="80" cy="80" r="70" className="stroke-google-gray-100 fill-none" strokeWidth="12" />
-                         <circle cx="80" cy="80" r="70" className="stroke-elite-blue fill-none transition-all duration-1000" strokeWidth="12" strokeDasharray="440" strokeDashoffset="44" />
-                      </svg>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                         <span className="text-3xl font-black text-google-gray-900">90%</span>
-                         <span className="text-[9px] font-black text-google-gray-400 uppercase tracking-widest">Available</span>
-                      </div>
-                   </div>
-                   
-                   <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-google-gray-100 shadow-sm">
-                         <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 bg-elite-emerald rounded-full" />
-                            <span className="text-[11px] font-bold text-google-gray-600">On-Duty Staff</span>
-                         </div>
-                         <span className="text-sm font-black text-google-gray-900">84</span>
-                      </div>
-                      <div className="flex items-center justify-between p-3 bg-white rounded-xl border border-google-gray-100 shadow-sm">
-                         <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 bg-elite-rose rounded-full" />
-                            <span className="text-[11px] font-bold text-google-gray-600">On Leave</span>
-                         </div>
-                         <span className="text-sm font-black text-google-gray-900">06</span>
-                      </div>
-                   </div>
-                </div>
-
-                <div className="glass-card p-8 border-white/80">
-                   <div className="flex items-center gap-4 mb-6">
-                      <div className="p-3 bg-elite-rose/10 rounded-xl">
-                         <ShieldCheck className="w-5 h-5 text-elite-rose" />
-                      </div>
-                      <div className="flex flex-col">
-                         <h3 className="text-xl font-bold text-google-gray-900 tracking-tight">Security</h3>
-                         <span className="text-[10px] font-bold text-google-gray-400 uppercase tracking-widest">Active Monitor</span>
-                      </div>
-                   </div>
-                   <div className="space-y-4">
-                      <div className="p-5 bg-google-gray-50 rounded-2xl border border-transparent hover:border-google-gray-100 transition-all cursor-pointer group shadow-sm bg-white/50 border border-white/60">
-                         <p className="text-[9px] font-black text-white bg-elite-rose px-2.5 py-0.5 rounded-full uppercase mb-3 tracking-widest w-fit shadow-lg">Immediate</p>
-                         <h4 className="text-base font-bold text-google-gray-900 mb-1 leading-snug">Fee Discrepancy Alert</h4>
-                         <p className="text-[12px] font-medium text-google-gray-500 mt-2">Review required in Section B-01.</p>
-                      </div>
-                      <div className="p-5 bg-google-gray-50 rounded-2xl border border-transparent hover:border-google-gray-100 hover:bg-white transition-all cursor-pointer group shadow-sm">
-                         <p className="text-[9px] font-black text-google-gray-400 uppercase mb-3 tracking-widest">Attendance Status</p>
-                         <h4 className="text-base font-bold text-google-gray-900 mb-1 leading-snug">Attendance Recorded</h4>
-                         <div className="flex items-center gap-2 mt-3 text-[10px] font-black text-elite-emerald bg-elite-emerald/5 w-fit px-2.5 py-0.5 rounded-full uppercase tracking-widest">
-                            Verified Access
-                         </div>
-                      </div>
-                   </div>
-                   <button className="w-full mt-8 py-4 bg-google-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-elite-blue transition-all">
-                      View Activity Logs
-                   </button>
-                </div>
-
-                <div className="glass-card p-8 bg-gradient-to-br from-elite-rose to-elite-indigo text-white border-none shadow-2xl relative overflow-hidden">
-                   <div className="absolute top-0 right-0 w-64 h-64 bg-white/20 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2" />
-                   <div className="relative z-10">
-                      <div className="flex items-center gap-3 mb-8">
-                         <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center backdrop-blur-xl border border-white/20">
-                            <Zap className="w-5 h-5 text-white" />
-                         </div>
-                         <span className="text-sm font-black text-white tracking-widest uppercase">Admin Insights</span>
-                      </div>
-                      <p className="text-xl font-bold leading-relaxed mb-8 tracking-tight italic">
-                         &quot;School efficiency has reached an <span className="underline decoration-white decoration-2 underline-offset-4">all-time high</span> of 94.2%.&quot;
-                      </p>
-                      <button className="w-full py-3.5 bg-white text-elite-rose text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-google-gray-100 transition-all shadow-xl">
-                         View Analytics
-                      </button>
-                   </div>
-                </div>
+                    </div>
+                    <span className="text-sm text-gray-500 w-12 text-right">
+                      {perf.percentage}%
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+
+        {/* Second Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Recent Activities */}
+          <div className="card">
+            <div className="p-4 border-b border-gray-100">
+              <h2 className="font-semibold text-gray-900">Recent Activities</h2>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {recentActivities.map((activity) => (
+                <div key={activity.id} className="p-4 flex items-start gap-4">
+                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <activity.icon className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900">
+                      {activity.action}
+                    </p>
+                    <p className="text-sm text-gray-500 truncate">
+                      {activity.description}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {activity.time}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Upcoming Events */}
+          <div className="card">
+            <div className="p-4 border-b border-gray-100">
+              <h2 className="font-semibold text-gray-900 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-blue-600" />
+                Upcoming Events
+              </h2>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {upcomingEvents.map((event) => (
+                <div key={event.id} className="p-4">
+                  <div className="flex items-start gap-3">
+                    <div
+                      className={cn(
+                        "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
+                        event.priority === "high"
+                          ? "bg-red-50"
+                          : event.priority === "medium"
+                            ? "bg-amber-50"
+                            : "bg-blue-50",
+                      )}
+                    >
+                      <Calendar
+                        className={cn(
+                          "w-5 h-5",
+                          event.priority === "high"
+                            ? "text-red-600"
+                            : event.priority === "medium"
+                              ? "text-amber-600"
+                              : "text-blue-600",
+                        )}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-900">
+                        {event.title}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {new Date(event.date).toLocaleDateString("en-IN", {
+                          weekday: "short",
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </p>
+                    </div>
+                    <span
+                      className={cn(
+                        "px-2 py-1 rounded-full text-xs font-medium",
+                        event.type === "meeting"
+                          ? "bg-purple-100 text-purple-700"
+                          : event.type === "exam"
+                            ? "bg-red-100 text-red-700"
+                            : event.type === "event"
+                              ? "bg-green-100 text-green-700"
+                              : "bg-blue-100 text-blue-700",
+                      )}
+                    >
+                      {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mb-8">
+          <h2 className="font-semibold text-gray-900 mb-4">Quick Actions</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+            <button className="card p-4 flex flex-col items-center gap-2 hover:border-blue-300 transition-colors cursor-pointer">
+              <Users className="w-6 h-6 text-blue-600" />
+              <span className="text-sm font-medium text-gray-700 text-center">
+                Add Staff
+              </span>
+            </button>
+            <button className="card p-4 flex flex-col items-center gap-2 hover:border-emerald-300 transition-colors cursor-pointer">
+              <GraduationCap className="w-6 h-6 text-emerald-600" />
+              <span className="text-sm font-medium text-gray-700 text-center">
+                New Admission
+              </span>
+            </button>
+            <button className="card p-4 flex flex-col items-center gap-2 hover:border-purple-300 transition-colors cursor-pointer">
+              <DollarSign className="w-6 h-6 text-purple-600" />
+              <span className="text-sm font-medium text-gray-700 text-center">
+                Fee Settings
+              </span>
+            </button>
+            <button className="card p-4 flex flex-col items-center gap-2 hover:border-amber-300 transition-colors cursor-pointer">
+              <ClipboardList className="w-6 h-6 text-amber-600" />
+              <span className="text-sm font-medium text-gray-700 text-center">
+                Schedule Exam
+              </span>
+            </button>
+            <button className="card p-4 flex flex-col items-center gap-2 hover:border-red-300 transition-colors cursor-pointer">
+              <FileText className="w-6 h-6 text-red-600" />
+              <span className="text-sm font-medium text-gray-700 text-center">
+                Send Notice
+              </span>
+            </button>
+            <button className="card p-4 flex flex-col items-center gap-2 hover:border-green-300 transition-colors cursor-pointer">
+              <Activity className="w-6 h-6 text-green-600" />
+              <span className="text-sm font-medium text-gray-700 text-center">
+                Generate Report
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Yearly Trends */}
+        <div className="card">
+          <div className="p-4 border-b border-gray-100">
+            <h2 className="font-semibold text-gray-900">
+              Student Enrollment & Revenue Trend
+            </h2>
+          </div>
+          <div className="p-6">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-3 px-4 text-sm font-medium text-gray-500">
+                      Month
+                    </th>
+                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-500">
+                      Students
+                    </th>
+                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-500">
+                      Growth
+                    </th>
+                    <th className="text-right py-3 px-4 text-sm font-medium text-gray-500">
+                      Revenue (₹)
+                    </th>
+                    <th className="text-center py-3 px-4 text-sm font-medium text-gray-500">
+                      Growth
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {monthlyData.map((data, idx) => (
+                    <tr key={data.month} className="border-b border-gray-100">
+                      <td className="py-3 px-4 text-sm font-medium text-gray-900">
+                        {data.month} 2025
+                      </td>
+                      <td className="py-3 px-4 text-sm text-gray-700 text-center">
+                        {data.students}
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        {idx > 0 ? (
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-1 text-sm",
+                              data.students > monthlyData[idx - 1].students
+                                ? "text-green-600"
+                                : "text-red-600",
+                            )}
+                          >
+                            {data.students > monthlyData[idx - 1].students ? (
+                              <ArrowUp className="w-3 h-3" />
+                            ) : (
+                              <ArrowDown className="w-3 h-3" />
+                            )}
+                            {Math.abs(
+                              data.students - monthlyData[idx - 1].students,
+                            )}
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-sm text-gray-700 text-right font-medium">
+                        ₹{(data.revenue / 100000).toFixed(1)}L
+                      </td>
+                      <td className="py-3 px-4 text-center">
+                        {idx > 0 ? (
+                          <span
+                            className={cn(
+                              "inline-flex items-center gap-1 text-sm",
+                              data.revenue > monthlyData[idx - 1].revenue
+                                ? "text-green-600"
+                                : "text-red-600",
+                            )}
+                          >
+                            {data.revenue > monthlyData[idx - 1].revenue ? (
+                              <ArrowUp className="w-3 h-3" />
+                            ) : (
+                              <ArrowDown className="w-3 h-3" />
+                            )}
+                            {Math.round(
+                              ((data.revenue - monthlyData[idx - 1].revenue) /
+                                monthlyData[idx - 1].revenue) *
+                                100,
+                            )}
+                            %
+                          </span>
+                        ) : (
+                          <span className="text-gray-400">-</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

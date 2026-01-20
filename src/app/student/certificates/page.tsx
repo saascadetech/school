@@ -16,7 +16,7 @@ export default function StudentCertificatesPage() {
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar role={role} onRoleChange={setRole} />
 
-      <main className="flex-1 lg:ml-0 pt-16 lg:pt-0">
+      <main className="flex-1 pt-16 lg:pt-0 lg:ml-64">
         <div className="p-4 lg:p-8">
           {/* Header */}
           <div className="mb-6">

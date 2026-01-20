@@ -2,162 +2,163 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Role, students, getStudent } from "@/lib/data";
-import { ArrowLeft, Calendar, Check, X, User } from "lucide-react";
-import Link from "next/link";
+import { Role } from "@/lib/data";
+import {
+  CheckCircle,
+  XCircle,
+  Clock,
+  Calendar,
+  TrendingUp,
+  Menu,
+} from "lucide-react";
+
+const attendanceData = [
+  { date: "Jan 19, 2026", day: "Monday", status: "present" },
+  { date: "Jan 18, 2026", day: "Sunday", status: "holiday" },
+  { date: "Jan 17, 2026", day: "Saturday", status: "weekend" },
+  { date: "Jan 16, 2026", day: "Friday", status: "present" },
+  { date: "Jan 15, 2026", day: "Thursday", status: "late" },
+  { date: "Jan 14, 2026", day: "Wednesday", status: "present" },
+  { date: "Jan 13, 2026", day: "Tuesday", status: "present" },
+  { date: "Jan 12, 2026", day: "Monday", status: "absent" },
+  { date: "Jan 11, 2026", day: "Sunday", status: "holiday" },
+  { date: "Jan 10, 2026", day: "Saturday", status: "weekend" },
+];
 
 export default function StudentAttendancePage() {
   const [role, setRole] = useState<Role>("student");
-  const student = getStudent("stud-1");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const todayStatus = student?.attendance[student.attendance.length - 1];
-  const presentCount = student?.attendance.filter((a) => a.present).length || 0;
-  const totalCount = student?.attendance.length || 0;
-  const presentPercentage =
-    totalCount > 0 ? Math.round((presentCount / totalCount) * 100) : 100;
+  const presentDays = attendanceData.filter(
+    (d) => d.status === "present",
+  ).length;
+  const absentDays = attendanceData.filter((d) => d.status === "absent").length;
+  const lateDays = attendanceData.filter((d) => d.status === "late").length;
+  const attendanceRate = Math.round(
+    (presentDays / (presentDays + absentDays + lateDays)) * 100,
+  );
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       <Sidebar role={role} onRoleChange={setRole} />
 
-      <main className="flex-1 lg:ml-0 pt-16 lg:pt-0">
-        <div className="p-4 lg:p-8">
-          {/* Header */}
+      {/* Mobile Header */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-30 px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <Menu className="w-5 h-5 text-gray-600" />
+          </button>
+          <h1 className="font-semibold text-gray-900">Attendance</h1>
+        </div>
+        <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+          S
+        </div>
+      </header>
+
+      <main className="pt-16 lg:pt-0 lg:ml-64">
+        <div className="p-4 sm:p-6 lg:p-8">
           <div className="mb-6">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-4"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
-            </Link>
-            <h1 className="text-2xl font-bold text-gray-900">My Attendance</h1>
-            <p className="text-gray-500 mt-1">View your attendance records</p>
+            <h1 className="text-2xl font-bold text-gray-900 hidden lg:block">
+              My Attendance
+            </h1>
+            <p className="text-gray-500">Track your attendance record</p>
           </div>
 
-          {/* Today's Status */}
-          <Card className="mb-6">
-            <CardBody>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div
-                    className={`p-3 rounded-xl ${
-                      todayStatus?.present
-                        ? "bg-emerald-100 text-emerald-600"
-                        : "bg-red-100 text-red-600"
+          {/* Stats */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="card p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Present</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    {presentDays}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="card p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                  <XCircle className="w-5 h-5 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Absent</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    {absentDays}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="card p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-amber-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Late</p>
+                  <p className="text-xl font-bold text-gray-900">{lateDays}</p>
+                </div>
+              </div>
+            </div>
+            <div className="card p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Attendance</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    {attendanceRate}%
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Attendance Calendar */}
+          <div className="card overflow-hidden">
+            <div className="p-4 border-b border-gray-100">
+              <h2 className="font-semibold text-gray-900">Attendance Record</h2>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {attendanceData.map((record, index) => (
+                <div
+                  key={index}
+                  className="p-4 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <Calendar className="w-5 h-5 text-gray-600" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{record.date}</p>
+                      <p className="text-sm text-gray-500">{record.day}</p>
+                    </div>
+                  </div>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      record.status === "present"
+                        ? "bg-green-100 text-green-700"
+                        : record.status === "absent"
+                          ? "bg-red-100 text-red-700"
+                          : record.status === "late"
+                            ? "bg-amber-100 text-amber-700"
+                            : "bg-gray-100 text-gray-600"
                     }`}
                   >
-                    {todayStatus?.present ? (
-                      <Check className="w-6 h-6" />
-                    ) : (
-                      <X className="w-6 h-6" />
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Today's Status</p>
-                    <p
-                      className={`text-2xl font-bold ${
-                        todayStatus?.present
-                          ? "text-emerald-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {todayStatus?.present ? "Present" : "Absent"}
-                    </p>
-                  </div>
+                    {record.status.charAt(0).toUpperCase() +
+                      record.status.slice(1)}
+                  </span>
                 </div>
-                <div className="text-center sm:text-right">
-                  <p className="text-sm text-gray-500">Attendance Rate</p>
-                  <p className="text-3xl font-bold text-[#1e3a5f]">
-                    {presentPercentage}%
-                  </p>
-                </div>
-              </div>
-            </CardBody>
-          </Card>
-
-          {/* Monthly Summary */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Monthly Summary - January 2026</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-emerald-50 rounded-xl">
-                  <p className="text-2xl font-bold text-emerald-600">
-                    {presentCount}
-                  </p>
-                  <p className="text-sm text-gray-600">Present Days</p>
-                </div>
-                <div className="text-center p-4 bg-red-50 rounded-xl">
-                  <p className="text-2xl font-bold text-red-600">
-                    {totalCount - presentCount}
-                  </p>
-                  <p className="text-sm text-gray-600">Absent Days</p>
-                </div>
-                <div className="text-center p-4 bg-blue-50 rounded-xl">
-                  <p className="text-2xl font-bold text-blue-600">
-                    {totalCount}
-                  </p>
-                  <p className="text-sm text-gray-600">Total Days</p>
-                </div>
-                <div className="text-center p-4 bg-amber-50 rounded-xl">
-                  <p className="text-2xl font-bold text-amber-600">
-                    {31 - totalCount}
-                  </p>
-                  <p className="text-sm text-gray-600">Remaining</p>
-                </div>
-              </div>
-            </CardBody>
-          </Card>
-
-          {/* Attendance History */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Recent Attendance</CardTitle>
-            </CardHeader>
-            <CardBody className="p-0">
-              <div className="divide-y divide-gray-100">
-                {student?.attendance.map((record, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 hover:bg-gray-50"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          record.present
-                            ? "bg-emerald-100 text-emerald-600"
-                            : "bg-red-100 text-red-600"
-                        }`}
-                      >
-                        {record.present ? (
-                          <Check className="w-5 h-5" />
-                        ) : (
-                          <X className="w-5 h-5" />
-                        )}
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {record.date}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {new Date(record.date).toLocaleDateString("en-US", {
-                            weekday: "long",
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                    <Badge variant={record.present ? "success" : "danger"}>
-                      {record.present ? "Present" : "Absent"}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </main>
     </div>

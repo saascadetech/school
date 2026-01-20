@@ -1,87 +1,67 @@
 @import "tailwindcss";
 
 @theme {
-  /* Elite SaaS Color Palette */
-  --color-elite-blue: #0066FF;
-  --color-elite-blue-glow: rgba(0, 102, 255, 0.4);
-  --color-elite-indigo: #6366F1;
-  --color-elite-emerald: #10B981;
-  --color-elite-amber: #F59E0B;
-  --color-elite-rose: #F43F5E;
-  
-  --color-google-gray-50: #F8FAFC;
-  --color-google-gray-100: #F1F5F9;
-  --color-google-gray-200: #E2E8F0;
-  --color-google-gray-300: #CBD5E1;
-  --color-google-gray-400: #94A3B8;
-  --color-google-gray-500: #64748B;
-  --color-google-gray-600: #475569;
-  --color-google-gray-700: #334155;
-  --color-google-gray-800: #1E293B;
-  --color-google-gray-900: #0F172A;
+  /* Clean Professional Color Palette */
+  --color-primary: #2563eb;
+  --color-primary-light: #3b82f6;
+  --color-primary-dark: #1d4ed8;
+  --color-secondary: #64748b;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
 
-  /* Expansive Shadows & Depth */
-  --shadow-elite-soft: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-  --shadow-elite-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-  --shadow-elite-glow: 0 0 40px rgba(0, 102, 255, 0.15);
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
 
-  --sidebar-width: 280px;
+  --sidebar-width: 260px;
 }
 
 @layer base {
+  html {
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+  }
+
   body {
-    @apply bg-google-gray-50 text-google-gray-900 font-sans antialiased;
-    background-image: 
-      radial-gradient(at 0% 0%, rgba(0, 102, 255, 0.02) 0, transparent 50%), 
-      radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.02) 0, transparent 50%),
-      radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.01) 0, transparent 50%);
+    @apply bg-gray-50 text-gray-900 antialiased;
   }
 }
 
 @layer components {
-  /* The Glass Card - Refined for balanced spacing */
-  .glass-card {
-    @apply bg-white/70 backdrop-blur-2xl border border-white/40 rounded-3xl shadow-elite-soft transition-all duration-500;
+  /* Card Component */
+  .card {
+    @apply bg-white rounded-xl shadow-md border border-gray-100;
   }
 
-  .glass-card:hover {
-    @apply bg-white/90 shadow-elite-glass -translate-y-1 border-white/60;
+  /* Button Styles */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 rounded-lg font-medium transition-all duration-200;
   }
 
-  /* Balanced Padding & Layout */
-  .layout-container {
-    @apply max-w-[1600px] mx-auto px-8 py-12;
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700;
   }
 
-  .section-gap {
-    @apply flex flex-col gap-12;
+  .btn-outline {
+    @apply border-2 border-gray-300 text-gray-700 hover:border-blue-500 hover:text-blue-600;
   }
 
-  /* Premium Interaction Layer - Refined sizes */
-  .action-icon {
-    @apply w-12 h-12 rounded-xl flex items-center justify-center text-google-gray-500 hover:text-elite-blue hover:bg-white hover:shadow-elite-soft transition-all duration-300;
+  .btn-secondary {
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
   }
 
-  /* Balanced Typography */
-  .text-hero {
-    @apply text-5xl md:text-6xl font-extrabold tracking-tighter leading-tight text-google-gray-900;
-  }
-
-  .text-dashboard-title {
-    @apply text-3xl md:text-4xl font-bold tracking-tight text-google-gray-900;
-  }
-
-  /* Elite Sidebar Items - Refined spacing */
-  .sidebar-item {
-    @apply flex items-center gap-4 px-6 py-4 rounded-2xl text-[15px] font-bold text-google-gray-500 hover:text-elite-blue hover:bg-white/50 transition-all duration-300 mx-4 mb-1;
-  }
-
-  .sidebar-item.active {
-    @apply bg-white shadow-elite-soft text-elite-blue border border-white/40;
-  }
-
-  /* Premium Gradients */
-  .gradient-blue {
-    background: linear-gradient(135deg, #0066FF 0%, #6366F1 100%);
+  /* Input Style */
+  .input {
+    @apply w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white;
   }
 }

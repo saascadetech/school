@@ -2,168 +2,220 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
-import { Card, CardBody, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
-import { Role, getStudent, getStudentFeeStatus } from "@/lib/data";
+import { Role } from "@/lib/data";
 import {
-  ArrowLeft,
   DollarSign,
-  Calendar,
-  CheckCircle,
-  Download,
+  CreditCard,
   Receipt,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  Download,
+  Menu,
 } from "lucide-react";
-import Link from "next/link";
+
+const feeHistory = [
+  {
+    id: 1,
+    month: "January 2026",
+    amount: 15000,
+    status: "paid",
+    date: "Jan 5, 2026",
+  },
+  {
+    id: 2,
+    month: "December 2025",
+    amount: 15000,
+    status: "paid",
+    date: "Dec 3, 2025",
+  },
+  {
+    id: 3,
+    month: "November 2025",
+    amount: 15000,
+    status: "paid",
+    date: "Nov 6, 2025",
+  },
+];
+
+const pendingDues = [
+  {
+    id: 1,
+    description: "Tuition Fee - February 2026",
+    amount: 15000,
+    dueDate: "Feb 5, 2026",
+  },
+  { id: 2, description: "Lab Charges", amount: 2500, dueDate: "Feb 10, 2026" },
+];
 
 export default function StudentFeesPage() {
   const [role, setRole] = useState<Role>("student");
-  const student = getStudent("stud-1");
-  const feeStatus = getStudentFeeStatus("stud-1");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const totalPaid = feeHistory.reduce((sum, f) => sum + f.amount, 0);
+  const totalPending = pendingDues.reduce((sum, f) => sum + f.amount, 0);
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       <Sidebar role={role} onRoleChange={setRole} />
 
-      <main className="flex-1 lg:ml-0 pt-16 lg:pt-0">
-        <div className="p-4 lg:p-8">
-          {/* Header */}
+      {/* Mobile Header */}
+      <header className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-30 px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
+            <Menu className="w-5 h-5 text-gray-600" />
+          </button>
+          <h1 className="font-semibold text-gray-900">Fees</h1>
+        </div>
+        <div className="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
+          S
+        </div>
+      </header>
+
+      <main className="pt-16 lg:pt-0 lg:ml-64">
+        <div className="p-4 sm:p-6 lg:p-8">
           <div className="mb-6">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-4"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Dashboard
-            </Link>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Fees & Payments
+            <h1 className="text-2xl font-bold text-gray-900 hidden lg:block">
+              My Fees
             </h1>
-            <p className="text-gray-500 mt-1">
-              View your fee details and payments
+            <p className="text-gray-500">
+              View fee details and payment history
             </p>
           </div>
 
-          {/* Fee Summary */}
-          <Card className="mb-6">
-            <CardBody>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-[#1e3a5f] text-white">
-                    <DollarSign className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Total Fee</p>
-                    <p className="text-3xl font-bold text-gray-900">
-                      ₹{feeStatus.total.toLocaleString()}
-                    </p>
-                  </div>
+          {/* Stats */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="card p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
                 </div>
-                <div className="flex gap-4">
-                  <div className="text-center p-4 bg-emerald-50 rounded-xl min-w-[100px]">
-                    <p className="text-xl font-bold text-emerald-600">
-                      ₹{feeStatus.paid.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-gray-600">Paid</p>
-                  </div>
-                  <div className="text-center p-4 bg-red-50 rounded-xl min-w-[100px]">
-                    <p className="text-xl font-bold text-red-600">
-                      ₹{feeStatus.due.toLocaleString()}
-                    </p>
-                    <p className="text-xs text-gray-600">Due</p>
-                  </div>
+                <div>
+                  <p className="text-sm text-gray-500">Paid</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    ₹{totalPaid.toLocaleString()}
+                  </p>
                 </div>
               </div>
-            </CardBody>
-          </Card>
-
-          {/* Payment Status */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Payment Status</CardTitle>
-            </CardHeader>
-            <CardBody>
-              <div className="mb-4">
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-gray-600">Progress</span>
-                  <span className="font-medium">
-                    {Math.round((feeStatus.paid / feeStatus.total) * 100)}%
-                  </span>
+            </div>
+            <div className="card p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-amber-600" />
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
-                  <div
-                    className="bg-emerald-500 h-3 rounded-full transition-all duration-500"
-                    style={{
-                      width: `${Math.round((feeStatus.paid / feeStatus.total) * 100)}%`,
-                    }}
-                  />
+                <div>
+                  <p className="text-sm text-gray-500">Pending</p>
+                  <p className="text-xl font-bold text-gray-900">
+                    ₹{totalPending.toLocaleString()}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-gray-400" />
-                  <div>
-                    <p className="text-sm text-gray-600">Due Date</p>
-                    <p className="font-medium text-gray-900">April 30, 2026</p>
-                  </div>
-                </div>
-                <Badge variant={feeStatus.isPaid ? "success" : "warning"}>
-                  {feeStatus.isPaid ? "Fully Paid" : "Payment Due"}
-                </Badge>
+            </div>
+          </div>
+
+          {/* Pay Now Button */}
+          <div className="card p-6 mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h3 className="font-semibold text-gray-900 text-lg">
+                  Outstanding Dues
+                </h3>
+                <p className="text-gray-500">Total pending amount</p>
               </div>
-            </CardBody>
-          </Card>
+              <div className="flex items-center gap-4">
+                <span className="text-2xl font-bold text-gray-900">
+                  ₹{totalPending.toLocaleString()}
+                </span>
+                <button className="btn btn-primary">Pay Now</button>
+              </div>
+            </div>
+          </div>
 
-          {/* Payment Actions */}
-          {!feeStatus.isPaid && (
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle>Make Payment</CardTitle>
-              </CardHeader>
-              <CardBody>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button className="flex-1">
-                    <DollarSign className="w-4 h-4" />
-                    Pay ₹{feeStatus.due.toLocaleString()}
-                  </Button>
-                  <Button variant="secondary">
-                    <Receipt className="w-4 h-4" />
-                    View Receipts
-                  </Button>
-                </div>
-              </CardBody>
-            </Card>
-          )}
-
-          {/* Payment History */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Payment History</CardTitle>
-            </CardHeader>
-            <CardBody className="p-0">
-              <div className="divide-y divide-gray-100">
-                <div className="p-4 flex items-center justify-between hover:bg-gray-50">
-                  <div className="flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-emerald-100 text-emerald-600">
-                      <CheckCircle className="w-5 h-5" />
+          {/* Pending Dues */}
+          <div className="card overflow-hidden mb-8">
+            <div className="p-4 border-b border-gray-100">
+              <h2 className="font-semibold text-gray-900">Pending Dues</h2>
+            </div>
+            <div className="divide-y divide-gray-100">
+              {pendingDues.map((due) => (
+                <div
+                  key={due.id}
+                  className="p-4 flex items-center justify-between"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                      <AlertCircle className="w-5 h-5 text-red-600" />
                     </div>
                     <div>
                       <p className="font-medium text-gray-900">
-                        First Installment
+                        {due.description}
                       </p>
-                      <p className="text-sm text-gray-500">January 10, 2026</p>
+                      <p className="text-sm text-gray-500">
+                        Due: {due.dueDate}
+                      </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <p className="font-semibold text-gray-900">₹6,000</p>
-                    <Button variant="ghost" size="sm">
-                      <Download className="w-4 h-4" />
-                    </Button>
-                  </div>
+                  <span className="font-semibold text-gray-900">
+                    ₹{due.amount.toLocaleString()}
+                  </span>
                 </div>
-              </div>
-            </CardBody>
-          </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Payment History */}
+          <div className="card overflow-hidden">
+            <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="font-semibold text-gray-900">Payment History</h2>
+              <button className="btn btn-secondary text-sm flex items-center gap-2">
+                <Download className="w-4 h-4" />
+                Download
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Month
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Amount
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Status
+                    </th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                      Date
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {feeHistory.map((fee) => (
+                    <tr key={fee.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-4 text-sm font-medium text-gray-900">
+                        {fee.month}
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-900">
+                        ₹{fee.amount.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="px-2.5 py-0.5 bg-green-100 text-green-700 text-xs rounded-full font-medium">
+                          Paid
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-500">
+                        {fee.date}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </main>
     </div>
