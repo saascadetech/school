@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import {
   Role,
   students,
@@ -139,26 +140,26 @@ export default function TeacherDashboard() {
     <div className="flex min-h-screen">
       <Sidebar role={role} onRoleChange={setRole} />
 
-      <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8 overflow-x-hidden max-w-full">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
               Teacher Dashboard
             </h1>
-            <p className="text-gray-500 mt-1">
+            <p className="text-gray-500 mt-1 text-sm sm:text-base">
               Welcome back! Here's your teaching overview for today.
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-500 whitespace-nowrap">
               Mrs. Smith • Mathematics & English
             </span>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 no-scrollbar">
           {[
             { id: "overview", label: "Overview", icon: BarChart },
             { id: "students", label: "My Students", icon: Users },
@@ -173,7 +174,7 @@ export default function TeacherDashboard() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
               className={cn(
-                "px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 whitespace-nowrap",
+                "px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-1.5 sm:gap-2 whitespace-nowrap text-sm",
                 activeTab === tab.id
                   ? "bg-blue-600 text-white"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200",
@@ -189,7 +190,7 @@ export default function TeacherDashboard() {
         {activeTab === "overview" && (
           <>
             {/* Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6 sm:mb-8">
               <div className="card p-4">
                 <div className="flex items-center justify-between">
                   <div>
@@ -837,6 +838,9 @@ export default function TeacherDashboard() {
           </div>
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav role="teacher" />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { Role, students } from "@/lib/data";
 import {
   Users,
@@ -62,18 +63,18 @@ export default function StudentDashboard() {
       <Sidebar role={role} onRoleChange={setRole} />
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8 overflow-x-hidden max-w-full">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
             Welcome, Student!
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">
             Here's your schedule and assignments for today.
           </p>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="card p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -226,6 +227,9 @@ export default function StudentDashboard() {
           </div>
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav role="student" />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { MobileBottomNav } from "@/components/MobileBottomNav";
 import {
   Role,
   students,
@@ -173,7 +174,7 @@ export default function PrincipalDashboard() {
     <div className="flex min-h-screen">
       <Sidebar role={role} onRoleChange={setRole} />
 
-      <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 lg:ml-64 p-4 sm:p-6 lg:p-8 overflow-x-hidden max-w-full">
         {/* Welcome Section */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900">
@@ -185,7 +186,7 @@ export default function PrincipalDashboard() {
         </div>
 
         {/* Key Performance Indicators */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="card p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -591,6 +592,9 @@ export default function PrincipalDashboard() {
           </div>
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav role="admin" />
     </div>
   );
 }

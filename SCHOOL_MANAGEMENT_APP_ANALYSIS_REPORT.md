@@ -257,12 +257,7 @@ A principal requires a comprehensive bird's-eye view of the entire school operat
   - Installment-wise due dates
   - Late fee penalties
   - Waiver management
-- [ ] **Online Payment Integration**
-  - Payment gateway (Razorpay, Paytm, etc.)
-  - UPI support
-  - Net banking
-  - Debit/Credit card
-  - Payment receipts auto-generation
+
 - [ ] **Fee Defaulters Management**
   - Auto-generated defaulter list
   - Reminder generation (SMS/Email)
@@ -296,8 +291,6 @@ A principal requires a comprehensive bird's-eye view of the entire school operat
 
 ---
 
-### 2.6 Library Management (MEDIUM PRIORITY)
-
 **Missing Features:**
 
 - [ ] **Book Catalog**
@@ -327,7 +320,6 @@ A principal requires a comprehensive bird's-eye view of the entire school operat
 **Missing Features:**
 
 - [ ] **SMS/Email Broadcasting**
-  - Bulk SMS to all parents
   - Class-wise messaging
   - Custom message templates
   - Scheduled messaging
@@ -356,8 +348,6 @@ A principal requires a comprehensive bird's-eye view of the entire school operat
   - Two-way communication
 
 ---
-
-### 2.8 Inventory & Asset Management (MEDIUM PRIORITY)
 
 **Missing Features:**
 
@@ -478,7 +468,7 @@ A principal requires a comprehensive bird's-eye view of the entire school operat
 
 1. Principal's Dashboard with school KPIs
 2. Staff attendance and leave management
-3. Enhanced fee management with online payments
+3. Enhanced fee management no online payments
 4. Expense tracking
 
 **Phase 2 - Short Term (3-6 months):**
@@ -486,21 +476,12 @@ A principal requires a comprehensive bird's-eye view of the entire school operat
 1. Examination and result management
 2. Student admission and enrollment
 3. Payroll processing
-4. Library management
 
 **Phase 3 - Medium Term (6-12 months):**
 
 1. Communication system (SMS/Email)
-2. Inventory and asset management
-3. Alumni management
-4. Enhanced parent portal
-
-**Phase 4 - Long Term (12-18 months):**
-
-1. Compliance automation
-2. Advanced analytics and AI insights
-3. Mobile app development
-4. API integrations (payment, transport GPS, etc.)
+2. Alumni management
+3. Enhanced parent portal
 
 ### 4.2 Technical Recommendations
 
